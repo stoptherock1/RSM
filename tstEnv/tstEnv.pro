@@ -13,8 +13,15 @@ TEMPLATE = app
 
 
 SOURCES += main.cpp\
-        MainWindow.cpp
+        MainWindow.cpp \
+    main_.cpp \
+    testEnv.cpp
 
-HEADERS  += MainWindow.h
+HEADERS  += MainWindow.h \
+    testEnv.hpp
 
 FORMS    += MainWindow.ui
+
+DISTFILES += \
+    main.dSYM \
+    makefile

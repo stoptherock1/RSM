@@ -7,43 +7,48 @@ pthread_mutex_t ioLock = PTHREAD_MUTEX_INITIALIZER;
 
 #define RX_PORT 18000
 #define TX_PORT 28000
-#define OSX
 #define DEBUG_PRINTS
 //#define DEEP_DEBUG_PRINTS
 
 
 #define info(arg)   { \
-                        pthread_mutex_lock(&stdOutLock); \
+                        if(0 != pthread_mutex_lock(&stdOutLock) ) \
+                            std::cout << "\e[0;31m[ ERROR WHILE LOCKING STDOUTMUTEX]\e[0m"; \
                         std::cout << "[ INFO ]  : " \
                                   << "txThread (line:  124) : " \
                                   << "tid: " << std::hex << tid() << " : " <<  std::dec\
                                   << arg << std::endl; \
-                        pthread_mutex_unlock(&stdOutLock);\
+                        if(0 != pthread_mutex_unlock(&stdOutLock) ) \
+                            std::cout << "\e[0;31m[ ERROR WHILE UNLOCKING STDOUTMUTEX]\e[0m"; \
                     }
 
 #define error(arg)  { \
-                        pthread_mutex_lock(&stdOutLock); \
+                        if(0 != pthread_mutex_lock(&stdOutLock) ) \
+                            std::cout << "\e[0;31m[ ERROR WHILE LOCKING STDOUTMUTEX]\e[0m"; \
                         std::cout << "\e[0;31m[ ERROR ]\e[0m : " \
                                   << __FUNCTION__\
                                   << " (line: " << std::setw(4) << __LINE__ << ") : " \
                                   << "tid: " << std::hex << tid() << " : " <<  std::dec\
                                   << arg \
                                   << std::endl; \
-                        pthread_mutex_unlock(&stdOutLock); \
+                        if(0 != pthread_mutex_unlock(&stdOutLock) ) \
+                            std::cout << "\e[0;31m[ ERROR WHILE UNLOCKING STDOUTMUTEX]\e[0m"; \
                     }
 
 
 
 #ifdef DEBUG_PRINTS
     #define debug(arg)  { \
-                            pthread_mutex_lock(&stdOutLock); \
+                            if(0 != pthread_mutex_lock(&stdOutLock) ) \
+                                std::cout << "\e[0;31m[ ERROR WHILE LOCKING STDOUTMUTEX]\e[0m"; \
                             std::cout << "\e[0;36m[ DEBUG ] : " \
                                       << __FUNCTION__ \
                                       << " (line: " << std::setw(4) << __LINE__ << ") : " \
                                       << "tid: " << std::hex << tid() << " : " <<  std::dec\
                                       << arg \
                                       << "\e[0m" << std::endl; \
-                            pthread_mutex_unlock(&stdOutLock); \
+                            if(0 != pthread_mutex_unlock(&stdOutLock) ) \
+                                std::cout << "\e[0;31m[ ERROR WHILE UNLOCKING STDOUTMUTEX]\e[0m"; \
                         }
 #else
     #define debug(arg)
@@ -51,29 +56,27 @@ pthread_mutex_t ioLock = PTHREAD_MUTEX_INITIALIZER;
 
 #ifdef DEEP_DEBUG_PRINTS
     #define debug2(arg)  { \
-                            pthread_mutex_lock(&stdOutLock); \
+                            if(0 != pthread_mutex_lock(&stdOutLock) ) \
+                                std::cout << "\e[0;31m[ ERROR WHILE LOCKING STDOUTMUTEX]\e[0m"; \
                             std::cout << "\e[0;36m[ DEBUG ] : " \
                                       << __FUNCTION__ \
                                       << " (line: " << std::setw(4) << __LINE__ << ") : " \
                                       << "tid: " << std::hex << tid() << " : " <<  std::dec\
                                       << arg \
                                       << "\e[0m" << std::endl; \
-                            pthread_mutex_unlock(&stdOutLock); \
+                            if(0 != pthread_mutex_unlock(&stdOutLock) ) \
+                                std::cout << "\e[0;31m[ ERROR WHILE UNLOCKING STDOUTMUTEX]\e[0m"; \
                         }
 #else
     #define debug2(arg)
 #endif
 
-#ifdef OSX
-    __uint64_t tid()
-    {
-        __uint64_t tid = 0;
-        pthread_threadid_np(pthread_self(), &tid);
-        return tid;
-    }
-#else
 
-#endif
+__inline__ pid_t tid()
+{
+    return (pid_t) syscall (SYS_gettid);
+}
+
 
 
 void *txThread(void* args_)
@@ -133,9 +136,10 @@ void *txThread(void* args_)
             debug("Message \"" << buf << "\" was sent  {PIPE}");
             pthread_mutex_unlock(&ioLock);
 
-           ret = dispatch_semaphore_signal( args.thisPtr->semaphores[id] );
-            if(0 == ret)
-                error("An error occured while waking a thread");
+           ret = sem_post( &args.thisPtr->semaphores[id] );
+            if(0 != ret)
+                error("An error occured while waking a thread; errno = "
+                      << errno << ": " << strerror(errno) );
             debug(id << " writed");
 
             break;
@@ -198,7 +202,7 @@ void* rxThread(void* args_)
             int &pipe = args.thisPtr->pipes[id][0]; //pipe[0] - read, pipe[1] - write
 
 
-            ret = dispatch_semaphore_wait( args.thisPtr->semaphores[id] , DISPATCH_TIME_FOREVER);
+            ret = sem_wait( &args.thisPtr->semaphores[id]);
             if(0 != ret)
                 error("An error occured while waiting on semaphore; timeout expired");
 
@@ -277,7 +281,7 @@ void testEnv::txSocket(char *buf, testEnv* thisPtr)
     ret = bind( connectionSocket, (struct sockaddr *) &txAddr, sizeof(txAddr) );
 
     debug("before wait");
-    dispatch_semaphore_wait( semaphores[i] , DISPATCH_TIME_FOREVER);
+    sem_wait( &semaphores[i]);
     debug("after wait");
 
     ret = connect( connectionSocket,
@@ -293,7 +297,10 @@ void testEnv::txSocket(char *buf, testEnv* thisPtr)
                   << errno << " : " << strerror(errno) );
     debug("Message \"" << buf << "\" was sent  {SOCKET}");
 
-    close(connectionSocket);
+    ret = close(connectionSocket);
+    if (0 != ret)
+        error("An error occured while closing socket; errno = "
+                  << errno << " : " << strerror(errno) );
 }
 
 void testEnv::rxSocket(char *buf, testEnv* thisPtr)
@@ -325,7 +332,7 @@ void testEnv::rxSocket(char *buf, testEnv* thisPtr)
               << ": " << strerror(errno) );
 
     debug("before post");
-    dispatch_semaphore_signal( semaphores[i] );
+    sem_post( &semaphores[i] );
     debug("after post");
 
     ret = recv(connectionSocket, buf, msgSize, MSG_WAITALL);
@@ -335,7 +342,10 @@ void testEnv::rxSocket(char *buf, testEnv* thisPtr)
 
     debug("Message \"" << buf << "\" was received {SOCKET}");
 
-    close(connectionSocket);
+    ret = close(connectionSocket);
+    if (0 != ret)
+        error("An error occured while closing socket; errno = "
+                  << errno << " : " << strerror(errno) );
 }
 
 
@@ -385,7 +395,7 @@ testEnv::~testEnv()
     {
         msgctl(msgQueueIds[i], IPC_RMID, NULL);
         delete[] pipes[i];
-        dispatch_release( semaphores[i] );
+        sem_close( &semaphores[i] );
     }
 
     delete[] semaphores;
@@ -404,7 +414,7 @@ void testEnv::initIpc()
 
     msgQueueIds = new int[threadsQuantity];
     pipes       = new int*[threadsQuantity];
-    semaphores  = new dispatch_semaphore_t[threadsQuantity];
+    semaphores  = new sem_t[threadsQuantity];
     args        = new threadArgs[threadsQuantity];
 
     for(int i=0; i<threadsQuantity; ++i)
@@ -415,10 +425,10 @@ void testEnv::initIpc()
             error("An error occured while writing to pipe; errno = "
                       << errno << ": " << strerror(errno) );
 
-        semaphores[i] = dispatch_semaphore_create(0);
-
-        if(NULL == semaphores[i])
-            error("An error occured while creating semaphore");
+        ret = sem_init(&semaphores[i], 0, 0);
+        if(-1 == ret)
+            error("An error occured while writing to pipe; errno = "
+                      << errno << ": " << strerror(errno) );
     }
 }
 
@@ -440,14 +450,14 @@ void testEnv::createAndStartThreads()
 {
     debug2("");
 
-    int threadCreateRet = -1;
+    int ret = -1;
 
     //start overload thread
-    threadCreateRet = pthread_create(&overloadThread, 0,
+    ret = pthread_create(&overloadThread, 0,
                                      generateOverload, &overloadOn);
-    if(0 != threadCreateRet)
+    if(0 != ret)
         error("An error occurred while creating new thread;"
-              << " threadCreateRet = " << threadCreateRet)
+              << " ret = " << ret)
 
 
     for(int i=0; i<threadsQuantity; ++i)
@@ -462,18 +472,18 @@ void testEnv::createAndStartThreads()
         debug2("args.threadNumber = " << args[i].threadNumber);
 
         //startTxThread
-        threadCreateRet = pthread_create(&txThreads[i], 0,
+        ret = pthread_create(&txThreads[i], 0,
                                          txThread, &args[i]);
-        if(0 != threadCreateRet)
+        if(0 != ret)
             error("An error occurred while creating new thread;"
-                      << " threadCreateRet = " << threadCreateRet)
+                      << " ret = " << ret)
 
         //startRxThread
-        threadCreateRet = pthread_create(&rxThreads[i], 0,
+        ret = pthread_create(&rxThreads[i], 0,
                                          rxThread, &args[i]);
-        if(0 != threadCreateRet)
+        if(0 != ret)
             error("An error occurred while creating new thread;"
-                      << " threadCreateRet = " << threadCreateRet);
+                      << " ret = " << ret);
 
     }
 
@@ -481,8 +491,15 @@ void testEnv::createAndStartThreads()
 
     for(int i=0; i<threadsQuantity; ++i)
     {
-        pthread_join(txThreads[i], NULL);
-        pthread_join(rxThreads[i], NULL);
+        ret = pthread_join(txThreads[i], NULL);
+        if(0 != ret)
+            error("An error occurred while joining thread;"
+                      << " ret = " << ret);
+
+        ret = pthread_join(rxThreads[i], NULL);
+        if(0 != ret)
+            error("An error occurred while joining thread;"
+                      << " ret = " << ret);
     }
 
     overloadOn = false;
