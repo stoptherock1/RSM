@@ -1,0 +1,335 @@
+main
+[ INFO ]  : txThread (line:  124) : tid: 5533 : Opening test environment
+	 *--------- Test environment --------*
+	  threadsQuantity:  40
+	  msgSize: 	    100
+	  msgQuantity: 	    1
+	  overloadOn: 	    false
+	  ipcType: 	    ipcSocket
+	 *-----------------------------------*
+[ INFO ]  : txThread (line:  124) : tid: 553b : Message "tx 3 MESSAGE 0" was created by [TX 3]
+[ INFO ]  : txThread (line:  124) : tid: 5575 : Message "tx 32 MESSAGE 0" was created by [TX 32]
+[ INFO ]  : txThread (line:  124) : tid: 5539 : Message "tx 2 MESSAGE 0" was created by [TX 2]
+[ INFO ]  : txThread (line:  124) : tid: 553d : Message "tx 4 MESSAGE 0" was created by [TX 4]
+[ INFO ]  : txThread (line:  124) : tid: 553f : Message "tx 5 MESSAGE 0" was created by [TX 5]
+[ INFO ]  : txThread (line:  124) : tid: 5541 : Message "tx 6 MESSAGE 0" was created by [TX 6]
+[ INFO ]  : txThread (line:  124) : tid: 5543 : Message "tx 7 MESSAGE 0" was created by [TX 7]
+[ INFO ]  : txThread (line:  124) : tid: 5537 : Message "tx 1 MESSAGE 0" was created by [TX 1]
+[ INFO ]  : txThread (line:  124) : tid: 5545 : Message "tx 8 MESSAGE 0" was created by [TX 8]
+[ INFO ]  : txThread (line:  124) : tid: 5549 : Message "tx 10 MESSAGE 0" was created by [TX 10]
+[ INFO ]  : txThread (line:  124) : tid: 5555 : Message "tx 16 MESSAGE 0" was created by [TX 16]
+[ INFO ]  : txThread (line:  124) : tid: 5551 : Message "tx 14 MESSAGE 0" was created by [TX 14]
+[ INFO ]  : txThread (line:  124) : tid: 5547 : Message "tx 9 MESSAGE 0" was created by [TX 9]
+[ INFO ]  : txThread (line:  124) : tid: 554f : Message "tx 13 MESSAGE 0" was created by [TX 13]
+[ INFO ]  : txThread (line:  124) : tid: 554d : Message "tx 12 MESSAGE 0" was created by [TX 12]
+[ INFO ]  : txThread (line:  124) : tid: 5557 : Message "tx 17 MESSAGE 0" was created by [TX 17]
+[ INFO ]  : txThread (line:  124) : tid: 554b : Message "tx 11 MESSAGE 0" was created by [TX 11]
+[ INFO ]  : txThread (line:  124) : tid: 5553 : Message "tx 15 MESSAGE 0" was created by [TX 15]
+[ INFO ]  : txThread (line:  124) : tid: 5563 : Message "tx 23 MESSAGE 0" was created by [TX 23]
+[ INFO ]  : txThread (line:  124) : tid: 5565 : Message "tx 24 MESSAGE 0" was created by [TX 24]
+[ INFO ]  : txThread (line:  124) : tid: 555d : Message "tx 20 MESSAGE 0" was created by [TX 20]
+[ INFO ]  : txThread (line:  124) : tid: 555f : Message "tx 21 MESSAGE 0" was created by [TX 21]
+[ INFO ]  : txThread (line:  124) : tid: 5567 : Message "tx 25 MESSAGE 0" was created by [TX 25]
+[ INFO ]  : txThread (line:  124) : tid: 5561 : Message "tx 22 MESSAGE 0" was created by [TX 22]
+[ INFO ]  : txThread (line:  124) : tid: 555b : Message "tx 19 MESSAGE 0" was created by [TX 19]
+[ INFO ]  : txThread (line:  124) : tid: 5559 : Message "tx 18 MESSAGE 0" was created by [TX 18]
+[ INFO ]  : txThread (line:  124) : tid: 5577 : Message "tx 33 MESSAGE 0" was created by [TX 33]
+[ INFO ]  : txThread (line:  124) : tid: 5571 : Message "tx 30 MESSAGE 0" was created by [TX 30]
+[ INFO ]  : txThread (line:  124) : tid: 556b : Message "tx 27 MESSAGE 0" was created by [TX 27]
+[ INFO ]  : txThread (line:  124) : tid: 5573 : Message "tx 31 MESSAGE 0" was created by [TX 31]
+[ INFO ]  : txThread (line:  124) : tid: 5569 : Message "tx 26 MESSAGE 0" was created by [TX 26]
+[ INFO ]  : txThread (line:  124) : tid: 556f : Message "tx 29 MESSAGE 0" was created by [TX 29]
+[ INFO ]  : txThread (line:  124) : tid: 556d : Message "tx 28 MESSAGE 0" was created by [TX 28]
+[0;36m[ DEBUG ] : rxSocket (line:  390) : tid: 553c : RX_PORT: 18002[0m
+[0;36m[ DEBUG ] : rxSocket (line:  403) : tid: 553c : before post[0m
+[0;36m[ DEBUG ] : rxSocket (line:  408) : tid: 553c : after post[0m
+[ INFO ]  : txThread (line:  124) : tid: 5533 : Start joining
+[0;36m[ DEBUG ] : rxSocket (line:  390) : tid: 553e : RX_PORT: 18004[0m
+[0;36m[ DEBUG ] : rxSocket (line:  403) : tid: 553e : before post[0m
+[0;36m[ DEBUG ] : rxSocket (line:  408) : tid: 553e : after post[0m
+[0;36m[ DEBUG ] : rxSocket (line:  390) : tid: 5540 : RX_PORT: 18006[0m
+[0;36m[ DEBUG ] : rxSocket (line:  403) : tid: 5540 : before post[0m
+[0;36m[ DEBUG ] : rxSocket (line:  408) : tid: 5540 : after post[0m
+[0;36m[ DEBUG ] : rxSocket (line:  390) : tid: 5538 : RX_PORT: 18008[0m
+[0;36m[ DEBUG ] : rxSocket (line:  403) : tid: 5538 : before post[0m
+[0;36m[ DEBUG ] : rxSocket (line:  408) : tid: 5538 : after post[0m
+[ INFO ]  : txThread (line:  124) : tid: 5583 : Message "tx 39 MESSAGE 0" was created by [TX 39]
+[ INFO ]  : txThread (line:  124) : tid: 557b : Message "tx 35 MESSAGE 0" was created by [TX 35]
+[ INFO ]  : txThread (line:  124) : tid: 557f : Message "tx 37 MESSAGE 0" was created by [TX 37]
+[ INFO ]  : txThread (line:  124) : tid: 557d : Message "tx 36 MESSAGE 0" was created by [TX 36]
+[ INFO ]  : txThread (line:  124) : tid: 5535 : Message "tx 0 MESSAGE 0" was created by [TX 0]
+[0;36m[ DEBUG ] : rxSocket (line:  390) : tid: 5542 : RX_PORT: 18010[0m
+[0;36m[ DEBUG ] : rxSocket (line:  403) : tid: 5542 : before post[0m
+[0;36m[ DEBUG ] : rxSocket (line:  408) : tid: 5542 : after post[0m
+[0;36m[ DEBUG ] : rxSocket (line:  390) : tid: 5544 : RX_PORT: 18012[0m
+[0;36m[ DEBUG ] : rxSocket (line:  403) : tid: 5544 : before post[0m
+[0;36m[ DEBUG ] : rxSocket (line:  408) : tid: 5544 : after post[0m
+[0;36m[ DEBUG ] : rxSocket (line:  390) : tid: 5546 : RX_PORT: 18014[0m
+[0;36m[ DEBUG ] : rxSocket (line:  403) : tid: 5546 : before post[0m
+[0;36m[ DEBUG ] : rxSocket (line:  408) : tid: 5546 : after post[0m
+[0;36m[ DEBUG ] : rxSocket (line:  390) : tid: 5554 : RX_PORT: 18016[0m
+[0;36m[ DEBUG ] : rxSocket (line:  403) : tid: 5554 : before post[0m
+[0;36m[ DEBUG ] : rxSocket (line:  408) : tid: 5554 : after post[0m
+[0;36m[ DEBUG ] : rxSocket (line:  390) : tid: 554c : RX_PORT: 18018[0m
+[0;36m[ DEBUG ] : rxSocket (line:  403) : tid: 554c : before post[0m
+[0;36m[ DEBUG ] : rxSocket (line:  408) : tid: 554c : after post[0m
+[0;36m[ DEBUG ] : rxSocket (line:  390) : tid: 554e : RX_PORT: 18020[0m
+[0;36m[ DEBUG ] : rxSocket (line:  403) : tid: 554e : before post[0m
+[0;36m[ DEBUG ] : rxSocket (line:  408) : tid: 554e : after post[0m
+[0;36m[ DEBUG ] : rxSocket (line:  390) : tid: 5550 : RX_PORT: 18022[0m
+[0;36m[ DEBUG ] : rxSocket (line:  403) : tid: 5550 : before post[0m
+[0;36m[ DEBUG ] : rxSocket (line:  408) : tid: 5550 : after post[0m
+[0;36m[ DEBUG ] : rxSocket (line:  390) : tid: 554a : RX_PORT: 18024[0m
+[0;36m[ DEBUG ] : rxSocket (line:  403) : tid: 554a : before post[0m
+[0;36m[ DEBUG ] : rxSocket (line:  408) : tid: 554a : after post[0m
+[ INFO ]  : txThread (line:  124) : tid: 5579 : Message "tx 34 MESSAGE 0" was created by [TX 34]
+[ INFO ]  : txThread (line:  124) : tid: 5581 : Message "tx 38 MESSAGE 0" was created by [TX 38]
+[0;36m[ DEBUG ] : rxSocket (line:  390) : tid: 5556 : RX_PORT: 18026[0m
+[0;36m[ DEBUG ] : rxSocket (line:  403) : tid: 5556 : before post[0m
+[0;36m[ DEBUG ] : rxSocket (line:  408) : tid: 5556 : after post[0m
+[0;36m[ DEBUG ] : rxSocket (line:  390) : tid: 5558 : RX_PORT: 18028[0m
+[0;36m[ DEBUG ] : rxSocket (line:  403) : tid: 5558 : before post[0m
+[0;36m[ DEBUG ] : rxSocket (line:  408) : tid: 5558 : after post[0m
+[0;36m[ DEBUG ] : rxSocket (line:  390) : tid: 5548 : RX_PORT: 18030[0m
+[0;36m[ DEBUG ] : rxSocket (line:  403) : tid: 5548 : before post[0m
+[0;36m[ DEBUG ] : rxSocket (line:  408) : tid: 5548 : after post[0m
+[0;36m[ DEBUG ] : rxSocket (line:  390) : tid: 5552 : RX_PORT: 18032[0m
+[0;36m[ DEBUG ] : rxSocket (line:  403) : tid: 5552 : before post[0m
+[0;36m[ DEBUG ] : rxSocket (line:  408) : tid: 5552 : after post[0m
+[0;36m[ DEBUG ] : rxSocket (line:  390) : tid: 5562 : RX_PORT: 18034[0m
+[0;36m[ DEBUG ] : rxSocket (line:  403) : tid: 5562 : before post[0m
+[0;36m[ DEBUG ] : rxSocket (line:  408) : tid: 5562 : after post[0m
+[0;36m[ DEBUG ] : rxSocket (line:  390) : tid: 555e : RX_PORT: 18036[0m
+[0;36m[ DEBUG ] : rxSocket (line:  403) : tid: 555e : before post[0m
+[0;36m[ DEBUG ] : rxSocket (line:  408) : tid: 555e : after post[0m
+[0;36m[ DEBUG ] : rxSocket (line:  390) : tid: 555c : RX_PORT: 18038[0m
+[0;36m[ DEBUG ] : rxSocket (line:  403) : tid: 555c : before post[0m
+[0;36m[ DEBUG ] : rxSocket (line:  408) : tid: 555c : after post[0m
+[0;36m[ DEBUG ] : rxSocket (line:  390) : tid: 5560 : RX_PORT: 18040[0m
+[0;36m[ DEBUG ] : rxSocket (line:  403) : tid: 5560 : before post[0m
+[0;36m[ DEBUG ] : rxSocket (line:  408) : tid: 5560 : after post[0m
+[0;36m[ DEBUG ] : rxSocket (line:  390) : tid: 5566 : RX_PORT: 18042[0m
+[0;36m[ DEBUG ] : rxSocket (line:  403) : tid: 5566 : before post[0m
+[0;36m[ DEBUG ] : rxSocket (line:  408) : tid: 5566 : after post[0m
+[0;36m[ DEBUG ] : rxSocket (line:  390) : tid: 555a : RX_PORT: 18044[0m
+[0;36m[ DEBUG ] : rxSocket (line:  403) : tid: 555a : before post[0m
+[0;36m[ DEBUG ] : rxSocket (line:  408) : tid: 555a : after post[0m
+[0;36m[ DEBUG ] : rxSocket (line:  390) : tid: 5564 : RX_PORT: 18046[0m
+[0;36m[ DEBUG ] : rxSocket (line:  403) : tid: 5564 : before post[0m
+[0;36m[ DEBUG ] : rxSocket (line:  408) : tid: 5564 : after post[0m
+[0;36m[ DEBUG ] : rxSocket (line:  390) : tid: 5568 : RX_PORT: 18048[0m
+[0;36m[ DEBUG ] : rxSocket (line:  403) : tid: 5568 : before post[0m
+[0;36m[ DEBUG ] : rxSocket (line:  408) : tid: 5568 : after post[0m
+[0;36m[ DEBUG ] : rxSocket (line:  390) : tid: 5578 : RX_PORT: 18050[0m
+[0;36m[ DEBUG ] : txSocket (line:  320) : tid: 553b : TX_PORT: 28002[0m
+[0;36m[ DEBUG ] : txSocket (line:  325) : tid: 553b : RX_PORT: 18002[0m
+[0;36m[ DEBUG ] : txSocket (line:  339) : tid: 553b : before wait[0m
+[0;36m[ DEBUG ] : rxSocket (line:  390) : tid: 557a : RX_PORT: 18052[0m
+[0;36m[ DEBUG ] : rxSocket (line:  403) : tid: 557a : before post[0m
+[0;36m[ DEBUG ] : rxSocket (line:  408) : tid: 557a : after post[0m
+[0;36m[ DEBUG ] : rxSocket (line:  403) : tid: 5578 : before post[0m
+[0;36m[ DEBUG ] : rxSocket (line:  408) : tid: 5578 : after post[0m
+[0;36m[ DEBUG ] : rxSocket (line:  390) : tid: 5576 : RX_PORT: 18054[0m
+[0;36m[ DEBUG ] : rxSocket (line:  403) : tid: 5576 : before post[0m
+[0;36m[ DEBUG ] : rxSocket (line:  408) : tid: 5576 : after post[0m
+[0;36m[ DEBUG ] : rxSocket (line:  390) : tid: 5574 : RX_PORT: 18056[0m
+[0;36m[ DEBUG ] : rxSocket (line:  403) : tid: 5574 : before post[0m
+[0;36m[ DEBUG ] : rxSocket (line:  408) : tid: 5574 : after post[0m
+[0;36m[ DEBUG ] : rxSocket (line:  390) : tid: 556c : RX_PORT: 18058[0m
+[0;36m[ DEBUG ] : rxSocket (line:  403) : tid: 556c : before post[0m
+[0;36m[ DEBUG ] : rxSocket (line:  408) : tid: 556c : after post[0m
+[0;36m[ DEBUG ] : rxSocket (line:  390) : tid: 5570 : RX_PORT: 18060[0m
+[0;36m[ DEBUG ] : rxSocket (line:  403) : tid: 5570 : before post[0m
+[0;36m[ DEBUG ] : rxSocket (line:  408) : tid: 5570 : after post[0m
+[0;36m[ DEBUG ] : rxSocket (line:  390) : tid: 556a : RX_PORT: 18062[0m
+[0;36m[ DEBUG ] : rxSocket (line:  403) : tid: 556a : before post[0m
+[0;36m[ DEBUG ] : rxSocket (line:  408) : tid: 556a : after post[0m
+[0;36m[ DEBUG ] : rxSocket (line:  390) : tid: 556e : RX_PORT: 18064[0m
+[0;36m[ DEBUG ] : rxSocket (line:  403) : tid: 556e : before post[0m
+[0;36m[ DEBUG ] : rxSocket (line:  408) : tid: 556e : after post[0m
+[0;36m[ DEBUG ] : rxSocket (line:  390) : tid: 5572 : RX_PORT: 18066[0m
+[0;36m[ DEBUG ] : rxSocket (line:  403) : tid: 5572 : before post[0m
+[0;36m[ DEBUG ] : rxSocket (line:  408) : tid: 5572 : after post[0m
+[0;36m[ DEBUG ] : rxSocket (line:  390) : tid: 5536 : RX_PORT: 18068[0m
+[0;36m[ DEBUG ] : rxSocket (line:  403) : tid: 5536 : before post[0m
+[0;36m[ DEBUG ] : rxSocket (line:  408) : tid: 5536 : after post[0m
+[0;36m[ DEBUG ] : rxSocket (line:  390) : tid: 553a : RX_PORT: 18070[0m
+[0;36m[ DEBUG ] : rxSocket (line:  403) : tid: 553a : before post[0m
+[0;36m[ DEBUG ] : rxSocket (line:  408) : tid: 553a : after post[0m
+[0;36m[ DEBUG ] : txSocket (line:  320) : tid: 5575 : TX_PORT: 28004[0m
+[0;36m[ DEBUG ] : txSocket (line:  325) : tid: 5575 : RX_PORT: 18004[0m
+[0;36m[ DEBUG ] : txSocket (line:  339) : tid: 5575 : before wait[0m
+[0;36m[ DEBUG ] : txSocket (line:  320) : tid: 5539 : TX_PORT: 28006[0m
+[0;36m[ DEBUG ] : txSocket (line:  325) : tid: 5539 : RX_PORT: 18006[0m
+[0;36m[ DEBUG ] : txSocket (line:  339) : tid: 5539 : before wait[0m
+[0;36m[ DEBUG ] : txSocket (line:  320) : tid: 553d : TX_PORT: 28008[0m
+[0;36m[ DEBUG ] : txSocket (line:  325) : tid: 553d : RX_PORT: 18008[0m
+[0;36m[ DEBUG ] : txSocket (line:  339) : tid: 553d : before wait[0m
+[0;36m[ DEBUG ] : txSocket (line:  320) : tid: 553f : TX_PORT: 28010[0m
+[0;36m[ DEBUG ] : txSocket (line:  325) : tid: 553f : RX_PORT: 18010[0m
+[0;36m[ DEBUG ] : txSocket (line:  339) : tid: 553f : before wait[0m
+[0;36m[ DEBUG ] : txSocket (line:  320) : tid: 5541 : TX_PORT: 28012[0m
+[0;36m[ DEBUG ] : txSocket (line:  325) : tid: 5541 : RX_PORT: 18012[0m
+[0;36m[ DEBUG ] : txSocket (line:  339) : tid: 5541 : before wait[0m
+[0;36m[ DEBUG ] : txSocket (line:  320) : tid: 5543 : TX_PORT: 28014[0m
+[0;36m[ DEBUG ] : txSocket (line:  325) : tid: 5543 : RX_PORT: 18014[0m
+[0;36m[ DEBUG ] : txSocket (line:  339) : tid: 5543 : before wait[0m
+[0;36m[ DEBUG ] : txSocket (line:  320) : tid: 5537 : TX_PORT: 28016[0m
+[0;36m[ DEBUG ] : txSocket (line:  325) : tid: 5537 : RX_PORT: 18016[0m
+[0;36m[ DEBUG ] : txSocket (line:  339) : tid: 5537 : before wait[0m
+[0;36m[ DEBUG ] : txSocket (line:  344) : tid: 5537 : after wait[0m
+[0;36m[ DEBUG ] : txSocket (line:  357) : tid: 5537 : Message "tx 1 MESSAGE 0" was sent  {SOCKET}[0m
+[0;36m[ DEBUG ] : txSocket (line:  320) : tid: 5545 : TX_PORT: 28018[0m
+[0;36m[ DEBUG ] : txSocket (line:  325) : tid: 5545 : RX_PORT: 18018[0m
+[0;36m[ DEBUG ] : txSocket (line:  339) : tid: 5545 : before wait[0m
+[0;36m[ DEBUG ] : txSocket (line:  320) : tid: 5549 : TX_PORT: 28020[0m
+[0;36m[ DEBUG ] : txSocket (line:  325) : tid: 5549 : RX_PORT: 18020[0m
+[0;36m[ DEBUG ] : txSocket (line:  339) : tid: 5549 : before wait[0m
+[0;36m[ DEBUG ] : txSocket (line:  320) : tid: 5555 : TX_PORT: 28022[0m
+[0;36m[ DEBUG ] : txSocket (line:  325) : tid: 5555 : RX_PORT: 18022[0m
+[0;36m[ DEBUG ] : txSocket (line:  339) : tid: 5555 : before wait[0m
+[0;36m[ DEBUG ] : txSocket (line:  320) : tid: 5551 : TX_PORT: 28024[0m
+[0;36m[ DEBUG ] : txSocket (line:  325) : tid: 5551 : RX_PORT: 18024[0m
+[0;36m[ DEBUG ] : txSocket (line:  339) : tid: 5551 : before wait[0m
+[0;36m[ DEBUG ] : txSocket (line:  320) : tid: 5547 : TX_PORT: 28026[0m
+[0;36m[ DEBUG ] : txSocket (line:  325) : tid: 5547 : RX_PORT: 18026[0m
+[0;36m[ DEBUG ] : txSocket (line:  339) : tid: 5547 : before wait[0m
+[0;36m[ DEBUG ] : txSocket (line:  320) : tid: 554f : TX_PORT: 28028[0m
+[0;36m[ DEBUG ] : txSocket (line:  325) : tid: 554f : RX_PORT: 18028[0m
+[0;36m[ DEBUG ] : txSocket (line:  339) : tid: 554f : before wait[0m
+[0;36m[ DEBUG ] : txSocket (line:  320) : tid: 554d : TX_PORT: 28030[0m
+[0;36m[ DEBUG ] : txSocket (line:  325) : tid: 554d : RX_PORT: 18030[0m
+[0;36m[ DEBUG ] : txSocket (line:  339) : tid: 554d : before wait[0m
+[0;36m[ DEBUG ] : txSocket (line:  320) : tid: 5557 : TX_PORT: 28032[0m
+[0;36m[ DEBUG ] : txSocket (line:  325) : tid: 5557 : RX_PORT: 18032[0m
+[0;36m[ DEBUG ] : txSocket (line:  339) : tid: 5557 : before wait[0m
+[0;36m[ DEBUG ] : txSocket (line:  320) : tid: 554b : TX_PORT: 28034[0m
+[0;36m[ DEBUG ] : txSocket (line:  325) : tid: 554b : RX_PORT: 18034[0m
+[0;36m[ DEBUG ] : txSocket (line:  339) : tid: 554b : before wait[0m
+[0;36m[ DEBUG ] : txSocket (line:  320) : tid: 5553 : TX_PORT: 28036[0m
+[0;36m[ DEBUG ] : txSocket (line:  325) : tid: 5553 : RX_PORT: 18036[0m
+[0;36m[ DEBUG ] : txSocket (line:  339) : tid: 5553 : before wait[0m
+[0;36m[ DEBUG ] : txSocket (line:  320) : tid: 5563 : TX_PORT: 28038[0m
+[0;36m[ DEBUG ] : txSocket (line:  325) : tid: 5563 : RX_PORT: 18038[0m
+[0;36m[ DEBUG ] : txSocket (line:  339) : tid: 5563 : before wait[0m
+[0;36m[ DEBUG ] : txSocket (line:  320) : tid: 5565 : TX_PORT: 28040[0m
+[0;36m[ DEBUG ] : txSocket (line:  325) : tid: 5565 : RX_PORT: 18040[0m
+[0;36m[ DEBUG ] : txSocket (line:  339) : tid: 5565 : before wait[0m
+[0;36m[ DEBUG ] : txSocket (line:  344) : tid: 5565 : after wait[0m
+[0;36m[ DEBUG ] : txSocket (line:  357) : tid: 5565 : Message "tx 24 MESSAGE 0" was sent  {SOCKET}[0m
+[0;36m[ DEBUG ] : txSocket (line:  320) : tid: 555d : TX_PORT: 28042[0m
+[0;36m[ DEBUG ] : txSocket (line:  325) : tid: 555d : RX_PORT: 18042[0m
+[0;36m[ DEBUG ] : txSocket (line:  339) : tid: 555d : before wait[0m
+[0;36m[ DEBUG ] : rxSocket (line:  415) : tid: 5560 : Message "tx 24 MESSAGE 0" was received {SOCKET}[0m
+[0;36m[ DEBUG ] : txSocket (line:  320) : tid: 555f : TX_PORT: 28044[0m
+[0;36m[ DEBUG ] : txSocket (line:  325) : tid: 555f : RX_PORT: 18044[0m
+[0;36m[ DEBUG ] : txSocket (line:  339) : tid: 555f : before wait[0m
+[0;36m[ DEBUG ] : txSocket (line:  344) : tid: 555f : after wait[0m
+[0;36m[ DEBUG ] : txSocket (line:  357) : tid: 555f : Message "tx 21 MESSAGE 0" was sent  {SOCKET}[0m
+[0;36m[ DEBUG ] : txSocket (line:  320) : tid: 5567 : TX_PORT: 28046[0m
+[0;36m[ DEBUG ] : txSocket (line:  325) : tid: 5567 : RX_PORT: 18046[0m
+[0;36m[ DEBUG ] : txSocket (line:  339) : tid: 5567 : before wait[0m
+[0;36m[ DEBUG ] : txSocket (line:  320) : tid: 5561 : TX_PORT: 28048[0m
+[0;36m[ DEBUG ] : txSocket (line:  325) : tid: 5561 : RX_PORT: 18048[0m
+[0;36m[ DEBUG ] : txSocket (line:  339) : tid: 5561 : before wait[0m
+[0;36m[ DEBUG ] : txSocket (line:  344) : tid: 5561 : after wait[0m
+[0;36m[ DEBUG ] : txSocket (line:  357) : tid: 5561 : Message "tx 22 MESSAGE 0" was sent  {SOCKET}[0m
+[0;36m[ DEBUG ] : txSocket (line:  320) : tid: 555b : TX_PORT: 28050[0m
+[0;36m[ DEBUG ] : txSocket (line:  325) : tid: 555b : RX_PORT: 18050[0m
+[0;36m[ DEBUG ] : txSocket (line:  339) : tid: 555b : before wait[0m
+[0;36m[ DEBUG ] : txSocket (line:  344) : tid: 555b : after wait[0m
+[0;36m[ DEBUG ] : txSocket (line:  357) : tid: 555b : Message "tx 19 MESSAGE 0" was sent  {SOCKET}[0m
+[0;36m[ DEBUG ] : txSocket (line:  320) : tid: 5559 : TX_PORT: 28052[0m
+[0;36m[ DEBUG ] : txSocket (line:  325) : tid: 5559 : RX_PORT: 18052[0m
+[0;36m[ DEBUG ] : txSocket (line:  339) : tid: 5559 : before wait[0m
+[0;36m[ DEBUG ] : txSocket (line:  320) : tid: 5577 : TX_PORT: 28054[0m
+[0;36m[ DEBUG ] : txSocket (line:  325) : tid: 5577 : RX_PORT: 18054[0m
+[0;36m[ DEBUG ] : txSocket (line:  339) : tid: 5577 : before wait[0m
+[0;36m[ DEBUG ] : txSocket (line:  344) : tid: 5577 : after wait[0m
+[0;36m[ DEBUG ] : txSocket (line:  357) : tid: 5577 : Message "tx 33 MESSAGE 0" was sent  {SOCKET}[0m
+[0;36m[ DEBUG ] : txSocket (line:  320) : tid: 5571 : TX_PORT: 28056[0m
+[0;36m[ DEBUG ] : txSocket (line:  325) : tid: 5571 : RX_PORT: 18056[0m
+[0;36m[ DEBUG ] : txSocket (line:  339) : tid: 5571 : before wait[0m
+[0;36m[ DEBUG ] : rxSocket (line:  415) : tid: 5576 : Message "tx 33 MESSAGE 0" was received {SOCKET}[0m
+[0;36m[ DEBUG ] : txSocket (line:  320) : tid: 556b : TX_PORT: 28058[0m
+[0;36m[ DEBUG ] : txSocket (line:  325) : tid: 556b : RX_PORT: 18058[0m
+[0;36m[ DEBUG ] : txSocket (line:  339) : tid: 556b : before wait[0m
+[0;36m[ DEBUG ] : txSocket (line:  344) : tid: 556b : after wait[0m
+[0;36m[ DEBUG ] : txSocket (line:  357) : tid: 556b : Message "tx 27 MESSAGE 0" was sent  {SOCKET}[0m
+[0;36m[ DEBUG ] : txSocket (line:  320) : tid: 5573 : TX_PORT: 28060[0m
+[0;36m[ DEBUG ] : txSocket (line:  325) : tid: 5573 : RX_PORT: 18060[0m
+[0;36m[ DEBUG ] : txSocket (line:  339) : tid: 5573 : before wait[0m
+[0;36m[ DEBUG ] : txSocket (line:  344) : tid: 5573 : after wait[0m
+[0;36m[ DEBUG ] : txSocket (line:  357) : tid: 5573 : Message "tx 31 MESSAGE 0" was sent  {SOCKET}[0m
+[0;36m[ DEBUG ] : rxSocket (line:  415) : tid: 556c : Message "tx 27 MESSAGE 0" was received {SOCKET}[0m
+[0;36m[ DEBUG ] : txSocket (line:  320) : tid: 5569 : TX_PORT: 28062[0m
+[0;36m[ DEBUG ] : txSocket (line:  325) : tid: 5569 : RX_PORT: 18062[0m
+[0;36m[ DEBUG ] : txSocket (line:  339) : tid: 5569 : before wait[0m
+[0;36m[ DEBUG ] : rxSocket (line:  415) : tid: 5568 : Message "tx 22 MESSAGE 0" was received {SOCKET}[0m
+[0;36m[ DEBUG ] : rxSocket (line:  415) : tid: 5570 : Message "tx 31 MESSAGE 0" was received {SOCKET}[0m
+[0;36m[ DEBUG ] : txSocket (line:  320) : tid: 556f : TX_PORT: 28064[0m
+[0;36m[ DEBUG ] : txSocket (line:  325) : tid: 556f : RX_PORT: 18064[0m
+[0;36m[ DEBUG ] : txSocket (line:  339) : tid: 556f : before wait[0m
+[0;36m[ DEBUG ] : txSocket (line:  344) : tid: 556f : after wait[0m
+[0;36m[ DEBUG ] : txSocket (line:  357) : tid: 556f : Message "tx 29 MESSAGE 0" was sent  {SOCKET}[0m
+[0;36m[ DEBUG ] : txSocket (line:  320) : tid: 556d : TX_PORT: 28066[0m
+[0;36m[ DEBUG ] : txSocket (line:  325) : tid: 556d : RX_PORT: 18066[0m
+[0;36m[ DEBUG ] : txSocket (line:  339) : tid: 556d : before wait[0m
+[0;36m[ DEBUG ] : rxSocket (line:  415) : tid: 5578 : Message "tx 19 MESSAGE 0" was received {SOCKET}[0m
+[0;36m[ DEBUG ] : rxSocket (line:  415) : tid: 555a : Message "tx 21 MESSAGE 0" was received {SOCKET}[0m
+[0;36m[ DEBUG ] : rxSocket (line:  415) : tid: 556e : Message "tx 29 MESSAGE 0" was received {SOCKET}[0m
+[0;36m[ DEBUG ] : rxSocket (line:  390) : tid: 5582 : RX_PORT: 18072[0m
+[0;36m[ DEBUG ] : rxSocket (line:  403) : tid: 5582 : before post[0m
+[0;36m[ DEBUG ] : rxSocket (line:  408) : tid: 5582 : after post[0m
+[0;36m[ DEBUG ] : rxSocket (line:  390) : tid: 5584 : RX_PORT: 18074[0m
+[0;36m[ DEBUG ] : rxSocket (line:  403) : tid: 5584 : before post[0m
+[0;36m[ DEBUG ] : rxSocket (line:  408) : tid: 5584 : after post[0m
+[0;36m[ DEBUG ] : rxSocket (line:  390) : tid: 557c : RX_PORT: 18076[0m
+[0;36m[ DEBUG ] : rxSocket (line:  403) : tid: 557c : before post[0m
+[0;36m[ DEBUG ] : rxSocket (line:  408) : tid: 557c : after post[0m
+[0;36m[ DEBUG ] : rxSocket (line:  390) : tid: 557e : RX_PORT: 18078[0m
+[0;36m[ DEBUG ] : rxSocket (line:  403) : tid: 557e : before post[0m
+[0;36m[ DEBUG ] : rxSocket (line:  408) : tid: 557e : after post[0m
+[0;36m[ DEBUG ] : rxSocket (line:  390) : tid: 5580 : RX_PORT: 18080[0m
+[0;36m[ DEBUG ] : txSocket (line:  320) : tid: 5583 : TX_PORT: 28068[0m
+[0;36m[ DEBUG ] : txSocket (line:  325) : tid: 5583 : RX_PORT: 18068[0m
+[0;36m[ DEBUG ] : txSocket (line:  339) : tid: 5583 : before wait[0m
+[0;36m[ DEBUG ] : txSocket (line:  344) : tid: 5583 : after wait[0m
+[0;36m[ DEBUG ] : txSocket (line:  357) : tid: 5583 : Message "tx 39 MESSAGE 0" was sent  {SOCKET}[0m
+[0;36m[ DEBUG ] : rxSocket (line:  415) : tid: 5536 : Message "tx 39 MESSAGE 0" was received {SOCKET}[0m
+[0;36m[ DEBUG ] : txSocket (line:  320) : tid: 557b : TX_PORT: 28070[0m
+[0;36m[ DEBUG ] : txSocket (line:  325) : tid: 557b : RX_PORT: 18070[0m
+[0;36m[ DEBUG ] : txSocket (line:  339) : tid: 557b : before wait[0m
+[0;36m[ DEBUG ] : txSocket (line:  344) : tid: 557b : after wait[0m
+[0;36m[ DEBUG ] : rxSocket (line:  415) : tid: 553a : Message "tx 35 MESSAGE 0" was received {SOCKET}[0m
+[0;36m[ DEBUG ] : txSocket (line:  320) : tid: 557f : TX_PORT: 28072[0m
+[0;36m[ DEBUG ] : txSocket (line:  325) : tid: 557f : RX_PORT: 18072[0m
+[0;36m[ DEBUG ] : txSocket (line:  339) : tid: 557f : before wait[0m
+[0;36m[ DEBUG ] : txSocket (line:  320) : tid: 5535 : TX_PORT: 28074[0m
+[0;36m[ DEBUG ] : txSocket (line:  325) : tid: 5535 : RX_PORT: 18074[0m
+[0;36m[ DEBUG ] : txSocket (line:  339) : tid: 5535 : before wait[0m
+[0;36m[ DEBUG ] : txSocket (line:  344) : tid: 5535 : after wait[0m
+[0;36m[ DEBUG ] : txSocket (line:  357) : tid: 5535 : Message "tx 0 MESSAGE 0" was sent  {SOCKET}[0m
+[0;36m[ DEBUG ] : rxSocket (line:  415) : tid: 5584 : Message "tx 0 MESSAGE 0" was received {SOCKET}[0m
+[0;36m[ DEBUG ] : txSocket (line:  357) : tid: 557b : Message "tx 35 MESSAGE 0" was sent  {SOCKET}[0m
+[0;36m[ DEBUG ] : txSocket (line:  320) : tid: 557d : TX_PORT: 28076[0m
+[0;36m[ DEBUG ] : txSocket (line:  325) : tid: 557d : RX_PORT: 18076[0m
+[0;36m[ DEBUG ] : txSocket (line:  320) : tid: 5579 : TX_PORT: 28078[0m
+[0;36m[ DEBUG ] : txSocket (line:  325) : tid: 5579 : RX_PORT: 18078[0m
+[0;36m[ DEBUG ] : txSocket (line:  339) : tid: 5579 : before wait[0m
+[0;36m[ DEBUG ] : txSocket (line:  344) : tid: 5579 : after wait[0m
+[0;36m[ DEBUG ] : txSocket (line:  357) : tid: 5579 : Message "tx 34 MESSAGE 0" was sent  {SOCKET}[0m
+[0;36m[ DEBUG ] : rxSocket (line:  415) : tid: 557e : Message "tx 34 MESSAGE 0" was received {SOCKET}[0m
+[0;36m[ DEBUG ] : txSocket (line:  320) : tid: 5581 : TX_PORT: 28080[0m
+[0;36m[ DEBUG ] : txSocket (line:  325) : tid: 5581 : RX_PORT: 18080[0m
+[0;36m[ DEBUG ] : txSocket (line:  339) : tid: 5581 : before wait[0m
+[0;36m[ DEBUG ] : txSocket (line:  344) : tid: 5581 : after wait[0m
+[0;36m[ DEBUG ] : txSocket (line:  357) : tid: 5581 : Message "tx 38 MESSAGE 0" was sent  {SOCKET}[0m
+[0;36m[ DEBUG ] : txSocket (line:  339) : tid: 557d : before wait[0m
+[0;36m[ DEBUG ] : txSocket (line:  344) : tid: 557d : after wait[0m
+[0;36m[ DEBUG ] : txSocket (line:  357) : tid: 557d : Message "tx 36 MESSAGE 0" was sent  {SOCKET}[0m
+[0;36m[ DEBUG ] : rxSocket (line:  403) : tid: 5580 : before post[0m
+[0;36m[ DEBUG ] : rxSocket (line:  415) : tid: 557c : Message "tx 36 MESSAGE 0" was received {SOCKET}[0m
+[0;36m[ DEBUG ] : rxSocket (line:  408) : tid: 5580 : after post[0m
+[0;36m[ DEBUG ] : rxSocket (line:  415) : tid: 5580 : Message "tx 38 MESSAGE 0" was received {SOCKET}[0m
+[0;36m[ DEBUG ] : rxSocket (line:  415) : tid: 5554 : Message "tx 1 MESSAGE 0" was received {SOCKET}[0m

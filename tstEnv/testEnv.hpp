@@ -16,17 +16,19 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
-//#include <dispatch/dispatch.h>
 #include <semaphore.h>
 #include <iomanip>
 #include <sys/syscall.h>
+#include <vector>
+#include <sys/time.h>
 
+const int globDataSize = 100;
 class testEnv;
 
 struct msgData
 {
     long type;
-    char *data;
+    char data[globDataSize];
 };
 
 enum ipcMechanismType
@@ -40,9 +42,6 @@ enum ipcMechanismType
 struct threadArgs
 {
     int threadNumber;
-    int msgQueueId;
-    int msgQuantity;
-    ipcMechanismType ipcType;
     testEnv* thisPtr;
 };
 
@@ -50,7 +49,7 @@ class testEnv
 {
 private:
     int threadsQuantity;       //number of pairs (tx,rx)
-    int msgSize;
+    int dataSize;
     int msgQuantity;
     bool overloadOn;
     ipcMechanismType ipcType;
@@ -61,19 +60,26 @@ private:
     pthread_t overloadThread;
     int *msgQueueIds;
     int **pipes;
+    int *rxPorts;
+    int *txPorts;
     threadArgs *args;
+    std::vector<void*> toFree;
+
 
     void printTestEnvInfo();
     void initIpc();
     void initThreads();
     void createAndStartThreads();
-    void rxSocket(char *buf, testEnv *thisPtr);
-    void txSocket(char *buf, testEnv* thisPtr);
 
     friend void* txThread(void* args_);
     friend void *rxThread(void* args_);
 
+    friend inline void rxTimestamp(threadArgs &args, int &id);
+    friend inline void txTimestamp(threadArgs &args, int &id);
+
 public:
+    uint64_t **timeResults;
+
 	testEnv();
 	~testEnv();
 
@@ -81,14 +87,20 @@ public:
 
     int getThreadsQuantity() const;
     void setThreadsQuantity(int value);
-    int getMsgSize() const;
-    void setMsgSize(int value);
+    int getDataSize() const;
+    void setDataSize(int value);
     int getMsgQuantity() const;
     void setMsgQuantity(int value);
     bool getOverloadOn() const;
     void setOverloadOn(bool value);
     ipcMechanismType getIpcType() const;
     void setIpcType(const ipcMechanismType &value);
+    int *getMsgQueueIds() const;
+    void setMsgQueueIds(int *value);
+    int **getPipes() const;
+    void setPipes(int **value);
+    uint64_t **getTimeResults() const;
+    void setTimeResults(uint64_t **value);
 };
 
 #endif /*TESTENV_H*/

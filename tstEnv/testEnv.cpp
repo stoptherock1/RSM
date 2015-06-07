@@ -1,13 +1,11 @@
 #include "testEnv.hpp"
 
 pthread_mutex_t stdOutLock = PTHREAD_MUTEX_INITIALIZER;
-pthread_mutex_t bindLock = PTHREAD_MUTEX_INITIALIZER;
-pthread_mutex_t ioLock = PTHREAD_MUTEX_INITIALIZER;
-
+pthread_mutex_t timeLock = PTHREAD_MUTEX_INITIALIZER;
 
 #define RX_PORT 18000
 #define TX_PORT 28000
-#define DEBUG_PRINTS
+//#define DEBUG_PRINTS
 //#define DEEP_DEBUG_PRINTS
 
 
@@ -77,7 +75,35 @@ __inline__ pid_t tid()
     return (pid_t) syscall (SYS_gettid);
 }
 
+inline void firstTimestamp(threadArgs &args, int &id)
+{
+    struct timeval tv;
+    gettimeofday(&tv,NULL);
+    if(0 != pthread_mutex_lock(&timeLock) )
+        error("An error occured while locking mutex; errno = "
+                  << errno << ": " << strerror(errno) );
 
+    args.thisPtr->timeResults[id][0] = tv.tv_sec*(uint64_t)1000000+tv.tv_usec;
+
+    if(0 != pthread_mutex_unlock(&timeLock) )
+        error("An error occured while locking mutex; errno = "
+                  << errno << ": " << strerror(errno) );
+}
+
+inline void secondTimestamp(threadArgs &args, int &id)
+{
+    struct timeval tv;
+    gettimeofday(&tv,NULL);
+    if(0 != pthread_mutex_lock(&timeLock) )
+        error("An error occured while locking mutex; errno = "
+                  << errno << ": " << strerror(errno) );
+
+    args.thisPtr->timeResults[id][1] = tv.tv_sec*(uint64_t)1000000+tv.tv_usec;
+
+    if(0 != pthread_mutex_unlock(&timeLock) )
+        error("An error occured while locking mutex; errno = "
+                  << errno << ": " << strerror(errno) );
+}
 
 void *txThread(void* args_)
 {
@@ -86,18 +112,96 @@ void *txThread(void* args_)
     threadArgs args = * (threadArgs*) args_;
     int id = args.threadNumber;
     int ret =  0;
+    int &msgQueueId = args.thisPtr->msgQueueIds[id];
+    int connectionSocket = -1;
+    struct sockaddr_in rxAddr;
+    struct sockaddr_in txAddr;
 
-    debug2("id = " << id);
+
+
+    // init IPC  ////////////
+    switch(args.thisPtr->ipcType)
+    {
+        case ipcMessageQueue:
+        {
+            //create msg queue
+            key_t key = ftok("main.cpp", id);
+            if(-1 == key)
+                error("An error occured while performing ftok; errno = "
+                          << errno << ": " << strerror(errno) );
+
+            msgQueueId = msgget(key, 0644 | IPC_CREAT);
+            if(-1 == msgQueueId)
+                error("An error occured while creating new message queueu; errno = "
+                          << errno << ": " << strerror(errno) );
+
+            break;
+        }
+
+        case ipcPipe:
+        {
+            //create pipe
+            args.thisPtr->pipes[id] = new int[2];
+            ret = pipe( args.thisPtr->pipes[id] );
+            if(0 != ret)
+                error("An error occured while creating a pipe; errno = "
+                          << errno << ": " << strerror(errno) );
+            break;
+        }
+
+        case ipcSocket:
+        {
+            memset(&rxAddr, 0, sizeof(struct sockaddr_in) );
+
+            connectionSocket = socket(AF_INET, SOCK_DGRAM, 0);
+            if (connectionSocket < 0)
+               error("An error occured while opening socket");
+
+            txAddr.sin_addr.s_addr = inet_addr("127.0.0.1");
+            txAddr.sin_family      = AF_INET;
+            txAddr.sin_port        = htons( args.thisPtr->txPorts[id] );
+            debug2("TX_PORT: " << args.thisPtr->txPorts[id] );
+
+            rxAddr.sin_addr.s_addr = inet_addr("127.0.0.1");
+            rxAddr.sin_family      = AF_INET;
+            rxAddr.sin_port        = htons( args.thisPtr->rxPorts[id] );
+            debug2("RX_PORT: " <<  args.thisPtr->rxPorts[id] );
+
+            ret = bind( connectionSocket, (struct sockaddr *) &txAddr, sizeof(txAddr) );
+            if (0 != ret)
+                error("An error occured while performing bind; errno = "
+                          << errno << ": " << strerror(errno) );
+
+            debug2("before wait");
+            ret = sem_wait( &args.thisPtr->semaphores[id] );
+
+            int value;
+            sem_getvalue(&args.thisPtr->semaphores[id], &value);
+            if (0 != ret)
+            {
+
+                error("An error occured while performing sem_wait; errno = "
+                          << errno << ": " << strerror(errno)
+                      << " The value of the " << id <<  " semaphor is " << value);
+            }
+
+            debug2("after wait");
+            break;
+        }
+
+        default:
+            break;
+    }
+
 
     for(int i=0; i<args.thisPtr->msgQuantity; ++i)
     {
         //prepare data to send
-        int dataSize = args.thisPtr->msgSize;
+        int dataSize = args.thisPtr->dataSize;
         char buf[dataSize];
 
         memset(buf, 0, dataSize);
         snprintf(buf, dataSize, "tx %d MESSAGE %d", id, i);
-//        snprintf(buf, dataSize, "tx");
         buf[dataSize - 1] = '\0';
 
         info("Message \"" << buf << "\" was created by [TX " << id << "]")
@@ -111,47 +215,55 @@ void *txThread(void* args_)
 
             //prepare message
             msg.type = msgType;
-            msg.data = (char*) calloc( dataSize, sizeof(char) );
+            memset(msg.data, 0, dataSize);
+            memcpy(msg.data, buf, dataSize);
 
             //send message
-            msgsnd(args.msgQueueId, &msg, dataSize, msgType);
+            ret = msgsnd(msgQueueId, &msg, dataSize, 1);
+            if(-1 == ret)
+            error("An error occured while performing msgrcv; errno = "
+                      << errno << ": " << strerror(errno) );
 
-            free(msg.data);
+            ret = sem_post( &args.thisPtr->semaphores[id] );
+             if(0 != ret)
+                 error("An error occured while waking a thread; errno = "
+                       << errno << ": " << strerror(errno) );
+
             break;
         }
 
         case ipcPipe:
         {
-            int &pipe = args.thisPtr->pipes[id][1]; //pipe[0] - read, pipe[1] - write
-
-            ret = pthread_mutex_lock(&ioLock);
-            if(0 != ret)
-                error("An error occured while locking mutex; ret = "
-                      << ret << ": " << strerror(ret) );
-
-            ret = write(pipe, buf, dataSize);
+            ret = write(args.thisPtr->pipes[id][1], buf, dataSize);
             if(-1 == ret)
                 error("An error occured while writing to pipe; errno = "
                           << errno << ": " << strerror(errno) );
 
             debug("Message \"" << buf << "\" was sent  {PIPE}");
-            ret = pthread_mutex_unlock(&ioLock);
-            if(0 != ret)
-                error("An error occured while unlocking mutex; ret = "
-                      << ret << ": " << strerror(ret) );
 
-           ret = sem_post( &args.thisPtr->semaphores[id] );
+            ret = sem_post( &args.thisPtr->semaphores[id] );
             if(0 != ret)
                 error("An error occured while waking a thread; errno = "
                       << errno << ": " << strerror(errno) );
-            debug(id << " writed");
 
             break;
         }
 
         case ipcSocket:
         {
-            args.thisPtr->txSocket(buf, args.thisPtr);
+            ret = connect( connectionSocket,
+                           (struct sockaddr *)&rxAddr,
+                           sizeof(rxAddr) );
+            if (0 != ret)
+                error("An error occured while performing connect; errno = "
+                          << errno << ": " << strerror(errno) );
+
+            ret = send(connectionSocket, buf, strlen(buf), 0);
+            if (-1 == ret)
+                error("An error occured while performing send; errno = "
+                          << errno << " : " << strerror(errno) );
+            debug("Message \"" << buf << "\" was sent  {SOCKET}");
+
             break;
         }
 
@@ -161,8 +273,20 @@ void *txThread(void* args_)
         }
         }
 
-//        info("Message \"" << buf << "\" was sent by [TX "
-//                << id << "]");
+
+        info("Message \"" << buf << "\" was sent by [TX " << id << "]");
+    }
+
+    firstTimestamp(args, id);
+
+
+    //cleanup
+    if(ipcSocket == args.thisPtr->ipcType)
+    {
+        ret = close(connectionSocket);
+        if (0 != ret)
+            error("An error occured while closing socket; errno = "
+                      << errno << " : " << strerror(errno) );
     }
 
     return 0;
@@ -175,16 +299,53 @@ void* rxThread(void* args_)
     threadArgs args = * (threadArgs*) args_;
     int id = args.threadNumber;
     int ret = 0;
+    int &msgQueueId = args.thisPtr->msgQueueIds[id];
+    int connectionSocket = -1;
+    struct sockaddr_in rxAddr;
 
-    debug2("id = " << id);
+    // init IPC //////////////////
+    switch(args.thisPtr->ipcType)
+    {
+        case ipcSocket:
+        {
+            memset(&rxAddr, 0, sizeof(struct sockaddr_in) );
+
+            connectionSocket = socket(AF_INET, SOCK_DGRAM, 0);
+            if (connectionSocket < 0)
+               error("An error occured while opening socket");
+
+            rxAddr.sin_family      = AF_INET;
+            rxAddr.sin_addr.s_addr = inet_addr("127.0.0.1");
+            rxAddr.sin_port        = htons( args.thisPtr->rxPorts[id] );
+            debug2("RX_PORT: " << args.thisPtr->rxPorts[id] );
+
+            ret = bind( connectionSocket, (struct sockaddr *) &rxAddr, sizeof(rxAddr) );
+            if (0 != ret)
+                error("An error occured while performing binding; errno = " << errno
+                      << ": " << strerror(errno) );
+
+            debug2("before post");
+            ret = sem_post( &args.thisPtr->semaphores[id] );
+            if (0 != ret)
+                error("An error occured while performing sem_post; errno = " << errno
+                      << ": " << strerror(errno) );
+            debug2("after post");
+            break;
+        }
+
+        default:
+            break;
+    }
+
 
     //prepare data ot send
-    int msgSize = args.thisPtr->msgSize;
-    char buf[msgSize];
+    int dataSize = args.thisPtr->dataSize;
+    char buf[dataSize];
 
     for(int i=0; i<args.thisPtr->msgQuantity; ++i)
     {
-        memset(buf, 0, msgSize);
+        debug2("args.thisPtr = " << args.thisPtr);
+        memset(buf, 0, dataSize);
 
         switch(args.thisPtr->ipcType)
         {
@@ -193,60 +354,63 @@ void* rxThread(void* args_)
             debug2("ipcMessageQueue");
             //receive message
             msgData msg;
-            msg.data = (char*) calloc( msgSize, sizeof(char) );
-            memset(msg.data, 0, msgSize);
-            //           msgrcv(args.msgQueueId, &msg, MSG_SIZE, msgType);
-            free(msg.data);
+            memset(msg.data, 0, dataSize);
+
+            debug2("args.thisPtr = " << args.thisPtr);
+
+            ret = sem_wait( &args.thisPtr->semaphores[id] );
+            if(0 != ret)
+                error("An error occured while waiting on semaphore; timeout expired");
+
+            debug2("msgQueueId = " << msgQueueId);
+            ret = msgrcv(msgQueueId, &msg, dataSize, 1, 0);
+
+            if(-1 == ret)
+            error("An error occured while performing msgrcv; errno = "
+                      << errno << ": " << strerror(errno) );
+
+            debug("args.thisPtr = " << args.thisPtr);
+            debug("args.thisPtr = " << args.thisPtr);
+            debug("args.thisPtr->msgQuantity = " << args.thisPtr->msgQuantity);
+
+            memcpy(buf, msg.data, dataSize);
+
             break;
         }
 
         case ipcPipe:
         {
             debug2("ipcPipe");
-            int &pipe = args.thisPtr->pipes[id][0]; //pipe[0] - read, pipe[1] - write
-
 
             ret = sem_wait( &args.thisPtr->semaphores[id] );
+
             if(0 != ret)
                 error("An error occured while waiting on semaphore; timeout expired");
 
-            debug(id << " is reading");
-
-            ret = pthread_mutex_lock(&ioLock);
-            if(0 != ret)
-                error("An error occured while locking mutex; ret = "
-                      << ret << ": " << strerror(ret) );
-
-            ret = read(pipe, buf, msgSize);
-            buf[msgSize-1] = '\0';
-
-            ret = close( args.thisPtr->pipes[id][0] );
-            error("An error occured while closing pipe; errno = "
-                      << errno << ": " << strerror(errno) );
-
-            ret = close( args.thisPtr->pipes[id][1] );
-            error("An error occured while closing pipe; errno = "
-                      << errno << ": " << strerror(errno) );
-
+            ret = read(args.thisPtr->pipes[id][0], buf, dataSize);
             if(-1 == ret)
-            {
                 error("An error occured while reading from pipe; errno = "
                           << errno << ": " << strerror(errno) );
-            }
+
+            buf[dataSize-1] = '\0';
 
             debug("Message \"" << buf << "\" was received  {PIPE}");
-            ret = pthread_mutex_unlock(&ioLock);
-            if(0 != ret)
-                error("An error occured while locking mutex; ret = "
-                      << ret << ": " << strerror(ret) );
 
             break;
         }
 
         case ipcSocket:
         {
-            debug2("ipcSocket");
-            args.thisPtr->rxSocket(buf, args.thisPtr);
+            ret = recv(connectionSocket, buf, dataSize, MSG_WAITALL);
+
+            if (-1 == ret)
+                error("An error occured while performing receive; errno = " << errno
+                      << ": " << strerror(errno) );
+
+
+
+            debug("Message \"" << buf << "\" was received {SOCKET}");
+
             break;
         }
 
@@ -254,9 +418,51 @@ void* rxThread(void* args_)
             debug2("default");
             break;
         }
-        //        msgrcv(args.msgQueueId, &msg, MSG_SIZE, 1, 0);
 
-//        info("Message \"" << buf << "\" was received by [RX " << id << "]")
+        debug2("args.thisPtr = " << args.thisPtr);
+        info("Message \"" << buf << "\" was received by [RX " << id << "]");
+    }
+
+    secondTimestamp(args, id);
+
+
+    switch(args.thisPtr->ipcType)
+    {
+        case ipcMessageQueue:
+        {
+            ret = msgctl(args.thisPtr->msgQueueIds[id], IPC_RMID, NULL);
+            if (0 != ret)
+            error("An error occured while closing message queue; errno = "
+                      << errno << " : " << strerror(errno) );
+            break;
+        }
+
+        case ipcPipe:
+        {
+            ret = close( args.thisPtr->pipes[id][0] );
+            if(0 != ret)
+            error("An error occured while closing pipe; errno = "
+                      << errno << ": " << strerror(errno) );
+
+            ret = close( args.thisPtr->pipes[id][1] );
+            if(0 != ret)
+            error("An error occured while closing pipe; errno = "
+                      << errno << ": " << strerror(errno) );
+            break;
+        }
+
+        case ipcSocket:
+        {
+            ret = close(connectionSocket);
+            if (0 != ret)
+            error("An error occured while closing socket; errno = "
+                      << errno << " : " << strerror(errno) );
+
+            break;
+        }
+
+        default:
+            break;
     }
 
     ret = sem_destroy( &args.thisPtr->semaphores[id] );
@@ -264,145 +470,8 @@ void* rxThread(void* args_)
         error("An error occured while closing semaphore; errno = "
                   << errno << " : " << strerror(errno) );
 
-    ret = sem_destroy( &args.thisPtr->semaphores[id] );
-    if (0 != ret)
-        error("An error occured while closing semaphore; errno = "
-                  << errno << " : " << strerror(errno) );
-
-    ret = msgctl(args.thisPtr->msgQueueIds[id], IPC_RMID, NULL);
-    if (0 != ret)
-        error("An error occured while closing message queue; errno = "
-                  << errno << " : " << strerror(errno) );
-
     return 0;
 }
-
-void testEnv::txSocket(char *buf, testEnv* thisPtr)
-{
-    debug2("");
-
-    int connectionSocket = -1;
-    struct sockaddr_in rxAddr;
-    struct sockaddr_in txAddr;
-    int ret = -1;
-
-    static int i = 0;
-    static int j = 0;
-
-    memset(&rxAddr, 0, sizeof(struct sockaddr_in) );
-
-    connectionSocket = socket(AF_INET, SOCK_DGRAM, 0);
-    if (connectionSocket < 0)
-       error("An error occured while opening socket");
-
-    ret = pthread_mutex_lock(&bindLock);
-    if(0 != ret)
-        error("An error occured while locking mutex; ret = "
-              << ret << ": " << strerror(ret) );
-
-    txAddr.sin_addr.s_addr = inet_addr("127.0.0.1");
-    txAddr.sin_family      = AF_INET;
-    txAddr.sin_port        = htons(TX_PORT + i);
-    debug("TX_PORT: " << TX_PORT + (++j) );
-
-    rxAddr.sin_addr.s_addr = inet_addr("127.0.0.1");
-    rxAddr.sin_family      = AF_INET;
-    rxAddr.sin_port        = htons(RX_PORT + i);
-    debug("RX_PORT: " << RX_PORT + (++i) );
-
-    ret = pthread_mutex_unlock(&bindLock);
-    if(0 != ret)
-        error("An error occured while unlocking mutex; ret = "
-              << ret << ": " << strerror(ret) );
-
-
-    ret = bind( connectionSocket, (struct sockaddr *) &txAddr, sizeof(txAddr) );
-    if (0 != ret)
-        error("An error occured while performing bind; errno = "
-                  << errno << ": " << strerror(errno) );
-
-    debug("before wait");
-    sem_wait( &semaphores[i] );
-    if (0 != ret)
-        error("An error occured while performing sem_wait; errno = "
-                  << errno << ": " << strerror(errno) );
-    debug("after wait");
-
-    ret = connect( connectionSocket,
-                   (struct sockaddr *)&rxAddr,
-                   sizeof(rxAddr) );
-    if (-1 == ret)
-        error("An error occured while performing connect; errno = "
-                  << errno << ": " << strerror(errno) );
-
-    ret = send(connectionSocket, buf, strlen(buf), 0);
-    if (-1 == ret)
-        error("An error occured while performing send; errno = "
-                  << errno << " : " << strerror(errno) );
-    debug("Message \"" << buf << "\" was sent  {SOCKET}");
-
-    ret = close(connectionSocket);
-    if (0 != ret)
-        error("An error occured while closing socket; errno = "
-                  << errno << " : " << strerror(errno) );
-}
-
-void testEnv::rxSocket(char *buf, testEnv* thisPtr)
-{
-    debug2("");
-
-    int connectionSocket = -1;
-    struct sockaddr_in rxAddr;
-    int ret = -1;
-
-    static int i = 0;
-
-    memset(&rxAddr, 0, sizeof(struct sockaddr_in) );
-
-    connectionSocket = socket(AF_INET, SOCK_DGRAM, 0);
-    if (connectionSocket < 0)
-       error("An error occured while opening socket");
-
-    ret = pthread_mutex_lock(&bindLock);
-    if(0 != ret)
-        error("An error occured while locking mutex; ret = "
-              << ret << ": " << strerror(ret) );
-
-    rxAddr.sin_family      = AF_INET;
-    rxAddr.sin_addr.s_addr = htonl(INADDR_ANY);
-    rxAddr.sin_port        = htons(RX_PORT + i);
-    debug("RX_PORT: " << RX_PORT + (++i) );
-
-    ret = pthread_mutex_unlock(&bindLock);
-    if(0 != ret)
-        error("An error occured while unlocking mutex; ret = "
-              << ret << ": " << strerror(ret) );
-
-    ret = bind( connectionSocket, (struct sockaddr *) &rxAddr, sizeof(rxAddr) );
-    if (0 != ret)
-        error("An error occured while performing binding; errno = " << errno
-              << ": " << strerror(errno) );
-
-    debug("before post");
-    sem_post( &semaphores[i] );
-    if (0 != ret)
-        error("An error occured while performing sem_post; errno = " << errno
-              << ": " << strerror(errno) );
-    debug("after post");
-
-    ret = recv(connectionSocket, buf, msgSize, MSG_WAITALL);
-    if (-1 == ret)
-        error("An error occured while performing receive; errno = " << errno
-              << ": " << strerror(errno) );
-
-    debug("Message \"" << buf << "\" was received {SOCKET}");
-
-    ret = close(connectionSocket);
-    if (0 != ret)
-        error("An error occured while closing socket; errno = "
-                  << errno << " : " << strerror(errno) );
-}
-
 
 
 void* generateOverload(void *overloadOn_)
@@ -425,7 +494,7 @@ void* generateOverload(void *overloadOn_)
 testEnv::testEnv()
 {
     threadsQuantity = 0;
-    msgSize         = 0;
+    dataSize        = globDataSize;
     msgQuantity     = 0;
     semaphores      = 0;
     overloadOn      = false;
@@ -441,25 +510,22 @@ testEnv::~testEnv()
 {
     debug2("");
 
-    int ret = 0;
+    if(ipcPipe == ipcType)
+    {
+        for(int i=0; i<threadsQuantity; ++i)
+            delete[] pipes[i];
+    }
 
+    for(int i=0; i<threadsQuantity; ++i)
+        delete[] timeResults[i];
+
+    delete[] timeResults;
+
+    delete[] txPorts;
+    delete[] rxPorts;
     delete[] txThreads;
     delete[] rxThreads;
     delete[] args;
-
-    for(int i=0; i<threadsQuantity; ++i)
-    {
-
-
-        delete[] pipes[i];
-
-        ret = sem_destroy( &semaphores[1] );
-        if (0 != ret)
-            error("An error occured while closing semaphore; errno = "
-                      << errno << " : " << strerror(errno) );
-
-    }
-
     delete[] msgQueueIds;
     delete[] semaphores;
     delete[] pipes;
@@ -469,27 +535,34 @@ void testEnv::initIpc()
 {
     debug2("");
 
+    int ret = 0;
+
     if(NULL != msgQueueIds)
         delete[] msgQueueIds;
 
     if(NULL != pipes)
         delete[] pipes;
 
+    rxPorts = new int[threadsQuantity];
+    txPorts = new int[threadsQuantity];
+
     msgQueueIds = new int[threadsQuantity];
     pipes       = new int*[threadsQuantity];
     semaphores  = new sem_t[threadsQuantity];
     args        = new threadArgs[threadsQuantity];
 
+    timeResults = new uint64_t*[threadsQuantity];
+    for(int i=0; i<threadsQuantity; ++i)
+        timeResults[i] = new uint64_t[2];
+
     for(int i=0; i<threadsQuantity; ++i)
     {
-        pipes[i] = new int[2];
-        int ret = pipe( pipes[i] );
-        if(-1 == ret)
-            error("An error occured while writing to pipe; errno = "
-                      << errno << ": " << strerror(errno) );
+        rxPorts[i] = RX_PORT + i;
+        txPorts[i] = TX_PORT + i;
 
+        sem_destroy( &semaphores[i] );
         ret = sem_init(&semaphores[i], 0, 0);
-        if(-1 == ret)
+        if(0 != ret)
             error("An error occured while writing to pipe; errno = "
                       << errno << ": " << strerror(errno) );
     }
@@ -525,17 +598,11 @@ void testEnv::createAndStartThreads()
 
     for(int i=0; i<threadsQuantity; ++i)
     {
-        //create msg queue
-        key_t key = ftok("main.cpp", i);
-        if(-1 == key)
-            error("An error occured while performing ftok; errno = "
-                      << errno << ": " << strerror(errno) );
 
-
-        msgQueueIds[i] = msgget(key, 0644 | IPC_CREAT);
 
         args[i].threadNumber   = i;
         args[i].thisPtr        = this;
+
 
         debug2("args.threadNumber = " << args[i].threadNumber);
 
@@ -543,38 +610,37 @@ void testEnv::createAndStartThreads()
         ret = pthread_create(&txThreads[i], 0, txThread, &args[i]);
         if(0 != ret)
             error("An error occurred while creating new thread;"
-                      << " ret = " << ret)
+                      << " ret = " << ret  << ": " << strerror(ret) );
 
         //startRxThread
         ret = pthread_create(&rxThreads[i], 0, rxThread, &args[i]);
         if(0 != ret)
             error("An error occurred while creating new thread;"
-                      << " ret = " << ret);
+                      << " ret = " << ret << ": " << strerror(ret) );
 
     }
 
-    info("Start joining");
+    debug2("Start joining");
 
     for(int i=0; i<threadsQuantity; ++i)
     {
         ret = pthread_join(txThreads[i], NULL);
         if(0 != ret)
             error("An error occurred while joining thread;"
-                      << " ret = " << ret);
+                      << " ret = " << ret  << ": " << strerror(ret) );
 
         ret = pthread_join(rxThreads[i], NULL);
         if(0 != ret)
             error("An error occurred while joining thread;"
-                      << " ret = " << ret);
+                      << " ret = " << ret  << ": " << strerror(ret) );
     }
 
     overloadOn = false;
     ret = pthread_join(overloadThread, NULL);
     if(0 != ret)
         error("An error occurred while joining thread;"
-                  << " ret = " << ret);
+                  << " ret = " << ret  << ": " << strerror(ret) );
 }
-
 
 void testEnv::startTest()
 {
@@ -591,6 +657,18 @@ void testEnv::startTest()
     info("Closing test environment");
 }
 
+
+
+
+uint64_t **testEnv::getTimeResults() const
+{
+    return timeResults;
+}
+
+void testEnv::setTimeResults(uint64_t **value)
+{
+    timeResults = value;
+}
 void testEnv::printTestEnvInfo()
 {
     debug2("");
@@ -599,7 +677,7 @@ void testEnv::printTestEnvInfo()
 
     std::cout << "\t *--------- Test environment --------*" << std::endl
               << "\t  threadsQuantity:  " << threadsQuantity << std::endl
-              << "\t  msgSize: \t    " << msgSize << std::endl
+              << "\t  msgSize: \t    " << dataSize << std::endl
               << "\t  msgQuantity: \t    " << msgQuantity << std::endl
               << "\t  overloadOn: \t    " << overloadOnStr << std::endl
               << "\t  ipcType: \t    ";
@@ -651,18 +729,18 @@ void testEnv::setThreadsQuantity(int value)
     threadsQuantity = value;
 }
 
-int testEnv::getMsgSize() const
+int testEnv::getDataSize() const
 {
     debug2("");
 
-    return msgSize;
+    return dataSize;
 }
 
-void testEnv::setMsgSize(int value)
+void testEnv::setDataSize(int value)
 {
     debug2("");
 
-    msgSize = value;
+    dataSize = globDataSize;
 }
 
 int testEnv::getMsgQuantity() const
@@ -705,4 +783,25 @@ void testEnv::setIpcType(const ipcMechanismType &value)
     debug2("");
 
     ipcType = value;
+}
+
+
+int *testEnv::getMsgQueueIds() const
+{
+    return msgQueueIds;
+}
+
+void testEnv::setMsgQueueIds(int *value)
+{
+    msgQueueIds = value;
+}
+
+int **testEnv::getPipes() const
+{
+    return pipes;
+}
+
+void testEnv::setPipes(int **value)
+{
+    pipes = value;
 }

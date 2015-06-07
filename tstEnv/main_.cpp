@@ -1,22 +1,28 @@
 #include "testEnv.hpp"
 #include <iostream>
 
+
 int main()
 {
 	std::cout << "main\n";
 
-    for(int i=0; i<10; ++i)
+//    for(int i=0; i<10; ++i)
     {
         testEnv test;
-        test.setIpcType(ipcSocket);
+        test.setIpcType(ipcMessageQueue);
 //        test.setIpcType(ipcPipe);
-        test.setThreadsQuantity(100);       //100 threads MAX (pipe)
+//        test.setIpcType(ipcSocket);
+        test.setThreadsQuantity(10);       //100 threads MAX (pipe)
         test.setMsgQuantity(1);
-        test.setMsgSize(100);
         test.setOverloadOn(false);
         test.startTest();
-//        sleep(1);
+        uint64_t **testResults = test.getTimeResults();
+
+        for(int i=0; i<test.getThreadsQuantity(); ++i)
+            std::cout << testResults[i][1] - testResults[i][0] << std::endl;
     }
+
+
 
 	return 0;
 }
