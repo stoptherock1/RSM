@@ -8,8 +8,8 @@ int main()
     for(int i=0; i<10; ++i)
     {
         testEnv test;
-//        test.setIpcType(ipcSocket);
-        test.setIpcType(ipcPipe);
+        test.setIpcType(ipcSocket);
+//        test.setIpcType(ipcPipe);
         test.setThreadsQuantity(100);       //100 threads MAX (pipe)
         test.setMsgQuantity(1);
         test.setMsgSize(100);

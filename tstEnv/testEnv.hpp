@@ -57,7 +57,6 @@ private:
 
     pthread_t *txThreads;
     pthread_t *rxThreads;
-//    dispatch_semaphore_t *semaphores;
     sem_t *semaphores;
     pthread_t overloadThread;
     int *msgQueueIds;
