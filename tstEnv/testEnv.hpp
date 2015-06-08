@@ -47,7 +47,7 @@ struct threadArgs
 
 class testEnv
 {
-private:
+public:
     int threadsQuantity;       //number of pairs (tx,rx)
     int dataSize;
     int msgQuantity;
@@ -66,7 +66,7 @@ private:
     std::vector<void*> toFree;
 
 
-    void printTestEnvInfo();
+
     void initIpc();
     void initThreads();
     void createAndStartThreads();
@@ -85,6 +85,7 @@ public:
 
     void startTest();
 
+    void printTestEnvInfo();
     int getThreadsQuantity() const;
     void setThreadsQuantity(int value);
     int getDataSize() const;

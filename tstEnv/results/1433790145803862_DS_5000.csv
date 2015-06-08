@@ -1,0 +1,84 @@
+
+ipcType ipcMessageQueue ; overload OFF ; dataSize = 5000
+result 1 (msgQuantity:time),    10,1520
+result 2 (msgQuantity:time),    20,1768
+result 3 (msgQuantity:time),    30,6616
+result 4 (msgQuantity:time),    40,1936
+result 5 (msgQuantity:time),    50,6758
+result 6 (msgQuantity:time),    60,4487
+result 7 (msgQuantity:time),    70,7470
+result 8 (msgQuantity:time),    80,5981
+result 9 (msgQuantity:time),    90,6844
+result 10 (msgQuantity:time),   100,9854
+result 11 (msgQuantity:time),   110,9099
+result 12 (msgQuantity:time),   120,29490
+
+ipcType ipcPipe ; overload OFF ; dataSize = 5000
+result 1 (msgQuantity:time),    10,3027
+result 2 (msgQuantity:time),    20,7758
+result 3 (msgQuantity:time),    30,53551
+result 4 (msgQuantity:time),    40,22276
+result 5 (msgQuantity:time),    50,33196
+result 6 (msgQuantity:time),    60,39159
+result 7 (msgQuantity:time),    70,32268
+result 8 (msgQuantity:time),    80,39883
+result 9 (msgQuantity:time),    90,58498
+result 10 (msgQuantity:time),   100,40930
+result 11 (msgQuantity:time),   110,92772
+result 12 (msgQuantity:time),   120,35843
+
+ipcType ipcSocket ; overload OFF ; dataSize = 5000
+result 1 (msgQuantity:time),    10,37343
+result 2 (msgQuantity:time),    20,25475
+result 3 (msgQuantity:time),    30,65246
+result 4 (msgQuantity:time),    40,456331
+result 5 (msgQuantity:time),    50,463139
+result 6 (msgQuantity:time),    60,423031
+result 7 (msgQuantity:time),    70,516541
+result 8 (msgQuantity:time),    80,993568
+result 9 (msgQuantity:time),    90,1347873
+result 10 (msgQuantity:time),   100,394891
+result 11 (msgQuantity:time),   110,1594956
+result 12 (msgQuantity:time),   120,304547
+
+ipcType ipcMessageQueue ; overload ON ; dataSize = 5000
+result 1 (msgQuantity:time),    10,1566
+result 2 (msgQuantity:time),    20,1208
+result 3 (msgQuantity:time),    30,2644
+result 4 (msgQuantity:time),    40,3034
+result 5 (msgQuantity:time),    50,7296
+result 6 (msgQuantity:time),    60,9227
+result 7 (msgQuantity:time),    70,16097
+result 8 (msgQuantity:time),    80,13097
+result 9 (msgQuantity:time),    90,16897
+result 10 (msgQuantity:time),   100,11833
+result 11 (msgQuantity:time),   110,16465
+result 12 (msgQuantity:time),   120,31930
+
+ipcType ipcPipe ; overload ON ; dataSize = 5000
+result 1 (msgQuantity:time),    10,21506
+result 2 (msgQuantity:time),    20,24476
+result 3 (msgQuantity:time),    30,40450
+result 4 (msgQuantity:time),    40,37926
+result 5 (msgQuantity:time),    50,6311
+result 6 (msgQuantity:time),    60,9504
+result 7 (msgQuantity:time),    70,45474
+result 8 (msgQuantity:time),    80,31564
+result 9 (msgQuantity:time),    90,55231
+result 10 (msgQuantity:time),   100,53089
+result 11 (msgQuantity:time),   110,124217
+result 12 (msgQuantity:time),   120,60927
+
+ipcType ipcSocket ; overload ON ; dataSize = 5000
+result 1 (msgQuantity:time),    10,19521
+result 2 (msgQuantity:time),    20,152632
+result 3 (msgQuantity:time),    30,201082
+result 4 (msgQuantity:time),    40,338619
+result 5 (msgQuantity:time),    50,549310
+result 6 (msgQuantity:time),    60,654287
+result 7 (msgQuantity:time),    70,699276
+result 8 (msgQuantity:time),    80,1137501
+result 9 (msgQuantity:time),    90,1324902
+result 10 (msgQuantity:time),   100,1729856
+result 11 (msgQuantity:time),   110,2105944
+result 12 (msgQuantity:time),   120,2037599

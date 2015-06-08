@@ -3,22 +3,37 @@
 pthread_mutex_t stdOutLock = PTHREAD_MUTEX_INITIALIZER;
 pthread_mutex_t timeLock = PTHREAD_MUTEX_INITIALIZER;
 
-#define RX_PORT 18000
-#define TX_PORT 28000
+#define RX_PORT 38000
+#define TX_PORT 48000
 //#define DEBUG_PRINTS
 //#define DEEP_DEBUG_PRINTS
+//#define INFO
+//#define DEBUG_PRINTS
 
+#define time_lock   \
+//                    if(0 != pthread_mutex_lock(&timeLock) ) \
+//                        error("An error occured while locking mutex; errno = " \
+//                                << errno << ": " << strerror(errno) );
 
-#define info(arg)   { \
-                        if(0 != pthread_mutex_lock(&stdOutLock) ) \
-                            std::cout << "\e[0;31m[ ERROR WHILE LOCKING STDOUTMUTEX]\e[0m"; \
-                        std::cout << "[ INFO ]  : " \
-                                  << "txThread (line:  124) : " \
-                                  << "tid: " << std::hex << tid() << " : " <<  std::dec\
-                                  << arg << std::endl; \
-                        if(0 != pthread_mutex_unlock(&stdOutLock) ) \
-                            std::cout << "\e[0;31m[ ERROR WHILE UNLOCKING STDOUTMUTEX]\e[0m"; \
-                    }
+#define time_unlock   \
+//                    if(0 != pthread_mutex_unlock(&timeLock) ) \
+//                        error("An error occured while locking mutex; errno = " \
+//                                << errno << ": " << strerror(errno) );
+
+#ifdef INFO
+    #define info(arg)   { \
+                            if(0 != pthread_mutex_lock(&stdOutLock) ) \
+                                std::cout << "\e[0;31m[ ERROR WHILE LOCKING STDOUTMUTEX]\e[0m"; \
+                            std::cout << "[ INFO ]  : " \
+                                      << "txThread (line:  124) : " \
+                                      << "tid: " << std::hex << tid() << " : " <<  std::dec\
+                                      << arg << std::endl; \
+                            if(0 != pthread_mutex_unlock(&stdOutLock) ) \
+                                std::cout << "\e[0;31m[ ERROR WHILE UNLOCKING STDOUTMUTEX]\e[0m"; \
+                        }
+#else
+    #define info(arg)
+#endif
 
 #define error(arg)  { \
                         if(0 != pthread_mutex_lock(&stdOutLock) ) \
@@ -79,30 +94,20 @@ inline void firstTimestamp(threadArgs &args, int &id)
 {
     struct timeval tv;
     gettimeofday(&tv,NULL);
-    if(0 != pthread_mutex_lock(&timeLock) )
-        error("An error occured while locking mutex; errno = "
-                  << errno << ": " << strerror(errno) );
 
-    args.thisPtr->timeResults[id][0] = tv.tv_sec*(uint64_t)1000000+tv.tv_usec;
-
-    if(0 != pthread_mutex_unlock(&timeLock) )
-        error("An error occured while locking mutex; errno = "
-                  << errno << ": " << strerror(errno) );
+    time_lock
+    args.thisPtr->timeResults[id][0] += tv.tv_sec*(uint64_t)1000000+tv.tv_usec;
+    time_unlock
 }
 
 inline void secondTimestamp(threadArgs &args, int &id)
 {
     struct timeval tv;
     gettimeofday(&tv,NULL);
-    if(0 != pthread_mutex_lock(&timeLock) )
-        error("An error occured while locking mutex; errno = "
-                  << errno << ": " << strerror(errno) );
 
-    args.thisPtr->timeResults[id][1] = tv.tv_sec*(uint64_t)1000000+tv.tv_usec;
-
-    if(0 != pthread_mutex_unlock(&timeLock) )
-        error("An error occured while locking mutex; errno = "
-                  << errno << ": " << strerror(errno) );
+    time_lock
+    args.thisPtr->timeResults[id][1] += tv.tv_sec*(uint64_t)1000000+tv.tv_usec;
+    time_unlock
 }
 
 void *txThread(void* args_)
@@ -220,6 +225,7 @@ void *txThread(void* args_)
 
             //send message
             ret = msgsnd(msgQueueId, &msg, dataSize, 1);
+            firstTimestamp(args, id);
             if(-1 == ret)
             error("An error occured while performing msgrcv; errno = "
                       << errno << ": " << strerror(errno) );
@@ -235,6 +241,7 @@ void *txThread(void* args_)
         case ipcPipe:
         {
             ret = write(args.thisPtr->pipes[id][1], buf, dataSize);
+            firstTimestamp(args, id);
             if(-1 == ret)
                 error("An error occured while writing to pipe; errno = "
                           << errno << ": " << strerror(errno) );
@@ -259,6 +266,7 @@ void *txThread(void* args_)
                           << errno << ": " << strerror(errno) );
 
             ret = send(connectionSocket, buf, strlen(buf), 0);
+            firstTimestamp(args, id);
             if (-1 == ret)
                 error("An error occured while performing send; errno = "
                           << errno << " : " << strerror(errno) );
@@ -277,7 +285,7 @@ void *txThread(void* args_)
         info("Message \"" << buf << "\" was sent by [TX " << id << "]");
     }
 
-    firstTimestamp(args, id);
+//    firstTimestamp(args, id);
 
 
     //cleanup
@@ -364,6 +372,7 @@ void* rxThread(void* args_)
 
             debug2("msgQueueId = " << msgQueueId);
             ret = msgrcv(msgQueueId, &msg, dataSize, 1, 0);
+            secondTimestamp(args, id);
 
             if(-1 == ret)
             error("An error occured while performing msgrcv; errno = "
@@ -388,6 +397,7 @@ void* rxThread(void* args_)
                 error("An error occured while waiting on semaphore; timeout expired");
 
             ret = read(args.thisPtr->pipes[id][0], buf, dataSize);
+            secondTimestamp(args, id);
             if(-1 == ret)
                 error("An error occured while reading from pipe; errno = "
                           << errno << ": " << strerror(errno) );
@@ -402,7 +412,7 @@ void* rxThread(void* args_)
         case ipcSocket:
         {
             ret = recv(connectionSocket, buf, dataSize, MSG_WAITALL);
-
+            secondTimestamp(args, id);
             if (-1 == ret)
                 error("An error occured while performing receive; errno = " << errno
                       << ": " << strerror(errno) );
@@ -423,7 +433,7 @@ void* rxThread(void* args_)
         info("Message \"" << buf << "\" was received by [RX " << id << "]");
     }
 
-    secondTimestamp(args, id);
+//    secondTimestamp(args, id);
 
 
     switch(args.thisPtr->ipcType)
@@ -513,11 +523,16 @@ testEnv::~testEnv()
     if(ipcPipe == ipcType)
     {
         for(int i=0; i<threadsQuantity; ++i)
-            delete[] pipes[i];
+        {
+            delete pipes[i];
+        }
+
     }
 
     for(int i=0; i<threadsQuantity; ++i)
-        delete[] timeResults[i];
+    {
+        delete timeResults[i];
+    }
 
     delete[] timeResults;
 
@@ -553,7 +568,10 @@ void testEnv::initIpc()
 
     timeResults = new uint64_t*[threadsQuantity];
     for(int i=0; i<threadsQuantity; ++i)
+    {
         timeResults[i] = new uint64_t[2];
+        memset(timeResults[i], 0, sizeof(uint64_t)*2);
+    }
 
     for(int i=0; i<threadsQuantity; ++i)
     {
@@ -648,7 +666,7 @@ void testEnv::startTest()
 
     info("Opening test environment");
 
-    printTestEnvInfo();
+//    printTestEnvInfo();
 
     initIpc();
     initThreads();
